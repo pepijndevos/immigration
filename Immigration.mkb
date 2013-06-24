@@ -53,9 +53,12 @@ options
 
 deployments
 {
+    blackberry-author = "Wishful Coding"
+    blackberry-authorid = "gYAAgJRv7YBwhVJBY1fYfEj3SZE"
     name = "Immigration"
+    provider = "Wishful Coding"
+    splashscreen-auto-onblack = "1"
     version-major = "0"
     version-minor = "0"
     version-revision = "1"
-    splashscreen-auto-onblack = "1"
 }
