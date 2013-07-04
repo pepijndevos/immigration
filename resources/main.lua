@@ -1,7 +1,12 @@
 local size = 64
 local score = {['r'] = 2, ['b'] = 3}
+local current_color = nil
+
+local bar_height = 128
+local bar_origin = director.displayHeight - bar_height
+
 local hcells = math.floor(director.displayWidth / size) - 1
-local vcells = math.floor(director.displayHeight / size) - 1
+local vcells = math.floor((director.displayHeight - bar_height) / size) - 1
 
 function empty()
   local world = {}
@@ -76,22 +81,19 @@ end
 world = empty()
 circles = empty()
 
-function cycleColor(event)
-  --if event.phase == "began" then
-  if true then
-    print("touched")
-    circle = event.target
-    print(circle.gx, circle.gy)
-    if world[circle.gx][circle.gy] == "r" then
-      world[circle.gx][circle.gy] = "b"
-      circle.color = color.blue
-    elseif world[circle.gx][circle.gy] == "b" then
-      world[circle.gx][circle.gy] = nil
-      circle.color = color.white
-    else
-      world[circle.gx][circle.gy] = "r"
-      circle.color = color.red
-    end
+function setColor(event)
+  print(event.phase)
+  circle = event.target
+  print(circle.gx, circle.gy)
+  if current_color == "b" then
+    world[circle.gx][circle.gy] = "b"
+    circle.color = color.blue
+  elseif current_color == "r" then
+    world[circle.gx][circle.gy] = "r"
+    circle.color = color.red
+  else
+    world[circle.gx][circle.gy] = nil
+    circle.color = color.white
   end
 end
 
@@ -100,10 +102,77 @@ for x = 0, hcells do
     local circle = director:createCircle(x*size, y*size, size/2)
     circle.gx = x
     circle.gy = y
-    circle:addEventListener("touch", cycleColor)
+    circle:addEventListener("touch", setColor)
     circles[x][y] = circle
   end
 end
+
+local red_button = director:createCircle(0, bar_origin, bar_height/2)
+local blue_button = director:createCircle(bar_height, bar_origin, bar_height/2)
+local white_button = director:createCircle(bar_height*2, bar_origin, bar_height/2)
+
+red_button.color = color.red
+red_button.strokeAlpha = 0
+red_button:addEventListener("touch", function ()
+  print "r"
+  current_color = "r"
+  red_button.strokeAlpha = 1
+  blue_button.strokeAlpha = 0
+  white_button.strokeAlpha = 0
+end)
+
+blue_button.color = color.blue
+blue_button.strokeAlpha = 0
+blue_button:addEventListener("touch", function ()
+  print "b"
+  current_color = "b"
+  red_button.strokeAlpha = 0
+  blue_button.strokeAlpha = 1
+  white_button.strokeAlpha = 0
+end)
+
+white_button.color = color.white
+white_button.strokeAlpha = 0
+white_button:addEventListener("touch", function ()
+  print "w"
+  current_color = nil
+  red_button.strokeAlpha = 0
+  blue_button.strokeAlpha = 0
+  white_button.strokeAlpha = 1
+end)
+
+local playstate = false
+
+local play = director:createLines(director.displayWidth - bar_height, bar_origin,
+  {0,0,  0,bar_height,  bar_height,bar_height/2, 0,0})
+
+local pause1 = director:createRectangle(director.displayWidth - bar_height*2, bar_origin, bar_height/3, bar_height)
+local pause2 = director:createRectangle(director.displayWidth - bar_height*1.5, bar_origin, bar_height/3, bar_height)
+
+pause1.strokeAlpha = 0
+pause2.strokeAlpha = 0
+play.color = color.white
+pause1.color = color.red
+pause2.color = color.red
+
+function playpause (event)
+  if event.phase == "ended" then
+    playstate = not playstate
+    if playstate then
+      play.color = color.green
+      pause1.color = color.white
+      pause2.color = color.white
+    else
+      play.color = color.white
+      pause1.color = color.red
+      pause2.color = color.red
+    end
+  end
+end
+
+play:addEventListener("touch", playpause)
+pause1:addEventListener("touch", playpause)
+pause2:addEventListener("touch", playpause)
 
 function draw()
   for x = 0, hcells do
@@ -120,8 +189,10 @@ function draw()
 end
 
 function life()
-  world = evolve(world)
-  draw()
+  if playstate then
+    world = evolve(world)
+    draw()
+  end
 end
 
 system:addTimer(life, 1)
