@@ -99,7 +99,9 @@ end
 
 for x = 0, hcells do
   for y = 0, vcells do
-    local circle = director:createCircle(x*size, y*size, size/2)
+    local circle = director:createCircle({
+      x=(x+0.5)*size, y=(y+0.5)*size, radius=size/2,
+      xAnchor=0.5, yAnchor=0.5 })
     circle.gx = x
     circle.gy = y
     circle:addEventListener("touch", setColor)
@@ -107,9 +109,15 @@ for x = 0, hcells do
   end
 end
 
-local red_button = director:createCircle(0, bar_origin, bar_height/2)
-local blue_button = director:createCircle(bar_height, bar_origin, bar_height/2)
-local white_button = director:createCircle(bar_height*2, bar_origin, bar_height/2)
+local red_button = director:createCircle({
+  x=0.5*bar_height, y=bar_origin+(0.5*bar_height), radius=bar_height/2,
+  xAnchor=0.5, yAnchor=0.5})
+local blue_button = director:createCircle({
+  x=1.5*bar_height, y=bar_origin+(0.5*bar_height), radius=bar_height/2,
+  xAnchor=0.5, yAnchor=0.5})
+local white_button = director:createCircle({
+  x=2.5*bar_height, y=bar_origin+(0.5*bar_height), radius=bar_height/2,
+  xAnchor=0.5, yAnchor=0.5})
 
 red_button.color = color.red
 red_button.strokeAlpha = 0

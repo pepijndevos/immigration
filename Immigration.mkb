@@ -55,10 +55,14 @@ deployments
 {
     blackberry-author = "Wishful Coding"
     blackberry-authorid = "gYAAgJRv7YBwhVJBY1fYfEj3SZE"
+    blackberry-cskpass = "fietspomp"
+    blackberry-keystore = "/Users/pepijndevos/Library/Research In Motion/author.p12"
+    blackberry-storepass = "fietspomp"
+    icon = "resources/icon.png"
     name = "Immigration"
     provider = "Wishful Coding"
     splashscreen-auto-onblack = "1"
     version-major = "0"
     version-minor = "0"
-    version-revision = "1"
+    version-revision = "2"
 }
