@@ -2,6 +2,7 @@
 MemMgrMaxAllocWarning=0
 
 [GL]
+PreCompileShaderBinaries=1
 
 [QUICK]
 mainFilename="main.lua"
